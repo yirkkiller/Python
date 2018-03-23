@@ -187,17 +187,34 @@ def getPossibleCombos(dictBadges, dictSurvivor):
     return finalCombos
 
 def createSetsOfBadgesFor3Survivors(listPossibleCombos):
-    dictBadgesSetPerSurvivor = {}
     list_survivors = []
-    for survivor in dictSurvivor.keys():
-        list_survivors.append(survivor)
-        dictBadgesSetPerSurvivor[survivor] = []
-    for badgeSet in listPossibleCombos:
-        priority = badgeSet[0]
-        survivor = badgeSet[1]
-        setOfBadges = badgeSet[2]
-        dictBadgesSetPerSurvivor[survivor].append(setOfBadges)
-
+    for elt in listPossibleCombos:
+        list_survivors.append(elt[1])
+    survivors = list(set(list_survivors))
+    survivor1Badges = []
+    survivor2Badges = []
+    survivor3Badges = []
+    for elt in listPossibleCombos:
+        if elt[1] == survivors[0]:
+            survivor1Badges.append(elt[2])
+        elif elt[1] == survivors[1]:
+            survivor2Badges.append(elt[2])
+        else:
+            survivor3Badges.append(elt[2])
+    list_survivors1and2 = list(itertools.product(survivor1Badges, survivor2Badges))
+    list_survivors3and2 = list(itertools.product(survivor3Badges, survivor2Badges))
+    list_survivors1and3 = list(itertools.product(survivor3Badges, survivor1Badges))
+    for elt in list_survivors1and2:
+        if len(list(set(elt[0]).intersection(elt[1]))) > 0:
+            list_survivors1and2.remove((elt[0], elt[1]))
+    for elt in list_survivors3and2:
+        if len(list(set(elt[0]).intersection(elt[1]))) > 0:
+            list_survivors3and2.remove((elt[0], elt[1]))
+    for elt in list_survivors1and3:
+        if len(list(set(elt[0]).intersection(elt[1]))) > 0:
+            list_survivors1and3.remove((elt[0], elt[1]))
+    print list_survivors1and2
+        
     
     
     
