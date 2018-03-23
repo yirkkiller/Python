@@ -1,0 +1,22 @@
+ID;Letter;Rarety;Effect;Orientation;Value;%/Value;Bonus;%/Value Bonus;Activation Bonus
+1;C;4;Critical Damage;SW;524;Value;131;Value;Hunter
+2;C;4;Critical Damage;W;12;%;3;%;Carol
+3;B;3;Critical Chance;E;9;%;2;%;Ezekiel
+4;D;3;Critical Chance;W;9;%;2;%;Hunter
+5;B;5;Health;W;18;%;4;%;Hunter
+6;C;3;Critical Damage;SW;13;%;3;%;Retaliate
+7;D;3;Critical Damage;NW;410;Value;N/A;N/A;N/A
+8;B;3;Damage;W;9;%;2;%;Hunter
+9;C;3;Damage;E;10;%;2;%;Rick
+10;D;5;Damage Reduction;W;18;%;4;%;Bruiser
+11;D;4;Damage;SE;357;Value;89;Value;Scout
+12;E;4;Damage;NW;12;%;3;%;Warrior
+13;C;4;Damage Reduction;NW;15;%;N/A;N/A;N/A
+14;E;4;Damage Reduction;E;12;%;3;%;Rufus
+15;A;3;Damage Reduction;NW;9;%;N/A;N/A;N/A
+16;C;3;Damage Reduction;NW;9;%;2;%;Warrior
+17;B;4;Health;NE;15;%;4;%;Rosita
+18;C;4;Health;E;590;Value;148;Value;Power Strike
+19;E;4;Health;SE;606;Value;152;Value;Governor
+20;C;3;Health;E;466;Value;116;Value;Strong
+21;C;3;Health;NE;422;Value;106;Value;Sure Shot
