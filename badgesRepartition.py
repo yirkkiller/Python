@@ -178,7 +178,9 @@ def getPossibleCombos(dictBadges, dictSurvivor):
                         bonus_list.append(dictSurvivor[survivor][param])
                 if bonus in bonus_list:
                     priority += 1
-                list_to_check = (survivor, priority-1, badgeSet[2])
+                    list_to_check = (priority-1, survivor, badgeSet[2])
+                else:
+                    list_to_check = (priority, survivor, badgeSet[2])
                 if list_to_check in finalCombos:
                     finalCombos.remove(list_to_check)
                 finalCombos.append((priority, survivor, badgeSet[2]))
@@ -190,7 +192,8 @@ def createSetsOfBadgesFor3Survivors(listPossibleCombos):
     list_survivors = []
     for elt in listPossibleCombos:
         list_survivors.append(elt[1])
-    survivors = list(set(list_survivors))
+    survivors = set(list_survivors)
+    survivors = list(survivors)
     survivor1Badges = []
     survivor2Badges = []
     survivor3Badges = []
@@ -201,23 +204,22 @@ def createSetsOfBadgesFor3Survivors(listPossibleCombos):
             survivor2Badges.append(elt[2])
         else:
             survivor3Badges.append(elt[2])
-    list_survivors1and2 = list(itertools.product(survivor1Badges, survivor2Badges))
-    list_survivors3and2 = list(itertools.product(survivor3Badges, survivor2Badges))
-    list_survivors1and3 = list(itertools.product(survivor3Badges, survivor1Badges))
-    for elt in list_survivors1and2:
-        if len(list(set(elt[0]).intersection(elt[1]))) > 0:
-            list_survivors1and2.remove((elt[0], elt[1]))
-    for elt in list_survivors3and2:
-        if len(list(set(elt[0]).intersection(elt[1]))) > 0:
-            list_survivors3and2.remove((elt[0], elt[1]))
-    for elt in list_survivors1and3:
-        if len(list(set(elt[0]).intersection(elt[1]))) > 0:
-            list_survivors1and3.remove((elt[0], elt[1]))
-    print list_survivors1and2
-        
     
-    
-    
+    list_survivors1and2 = []
+    for elt_survivor1 in survivor1Badges:
+        for elt_survivor2 in survivor2Badges:
+            for elt_survivor3 in survivor3Badges:
+                set_badge_survivor1 = set(elt_survivor1)
+                set_badge_survivor2 = set(elt_survivor2)
+                set_badge_survivor3 = set(elt_survivor3)
+                intersect_survivors1and2 = set_badge_survivor1.intersection(set_badge_survivor2)
+                intersect_survivors1and3 = set_badge_survivor1.intersection(set_badge_survivor3)
+                intersect_survivors2and3 = set_badge_survivor2.intersection(set_badge_survivor3)
+                if len(intersect_survivors1and2) == 0:
+                    if len(intersect_survivors1and3) == 0:
+                        if len(intersect_survivors2and3) == 0:
+                            list_survivors1and2.append((elt_survivor1, elt_survivor2, elt_survivor3))
+    print list_survivors1and2 
                 
 if __name__ == "__main__":
     listOfBadges = readCSVFile("badges")
