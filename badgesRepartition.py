@@ -204,7 +204,7 @@ def createSetsOfBadgesFor3Survivors(listPossibleCombos):
         elif elt[1] == survivors[1]:
             survivor2Badges.append((elt[2], elt[0]))
             name_survivor2 = survivors[1]
-        else:
+        elif elt[1] == survivors[2]:
             survivor3Badges.append((elt[2], elt[0]))
             name_survivor3 = survivors[2]
     
@@ -215,19 +215,16 @@ def createSetsOfBadgesFor3Survivors(listPossibleCombos):
                 set_badge_survivor1 = set(elt_survivor1[0])
                 set_badge_survivor2 = set(elt_survivor2[0])
                 set_badge_survivor3 = set(elt_survivor3[0])
-                priority_survivor1 = int(elt_survivor1[1])
-                priority_survivor2 = int(elt_survivor2[1])
-                priority_survivor3 = int(elt_survivor3[1])
-                priority = priority_survivor1+priority_survivor2+priority_survivor3
                 intersect_survivors1and2 = set_badge_survivor1.intersection(set_badge_survivor2)
-                intersect_survivors1and3 = set_badge_survivor1.intersection(set_badge_survivor3)
-                intersect_survivors2and3 = set_badge_survivor2.intersection(set_badge_survivor3)
-                position_list1 = survivor1Badges.index(elt_survivor1)
-                position_list2 = survivor1Badges.index(elt_survivor2)
-                position_list3 = survivor1Badges.index(elt_survivor3)
-                if len(intersect_survivors1and2) == 0:
+                if len(intersect_survivors1and2) == 0: 
+                    intersect_survivors1and3 = set_badge_survivor1.intersection(set_badge_survivor3)
                     if len(intersect_survivors1and3) == 0:
+                        intersect_survivors2and3 = set_badge_survivor2.intersection(set_badge_survivor3)
                         if len(intersect_survivors2and3) == 0:
+                            priority_survivor1 = int(elt_survivor1[1])
+                            priority_survivor2 = int(elt_survivor2[1])
+                            priority_survivor3 = int(elt_survivor3[1])
+                            priority = priority_survivor1+priority_survivor2+priority_survivor3
                             list_CombosSurvivors.append(priority, ((name_survivor1, elt_survivor1), (name_survivor2, elt_survivor2), (name_survivor3, elt_survivor3)))
     list_CombosSurvivors = list_CombosSurvivors.sort(reverse = True)
     print  list_CombosSurvivors
