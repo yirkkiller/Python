@@ -141,7 +141,8 @@ def getPossibleCombos(dictBadges, dictSurvivor):
             priority = 0
             for idBadge in badgeSet:
                 type_effect = dictBadges[idBadge]["Effect"]
-                priority += int(dictPriorities[class_survivor][type_effect])
+                priority_badge = int(dictPriorities[class_survivor][type_effect])
+                priority += priority_badge
             priority = priority + badgeSetWithPriority[1]
             priorityCombosByClass.append((priority, class_survivor, badgeSet))
     
@@ -208,24 +209,25 @@ def createSetsOfBadgesFor3Survivors(listPossibleCombos):
             survivor3Badges.append((elt[2], elt[0]))
             name_survivor3 = survivors[2]
     
+    list_wrongsets = []
     list_CombosSurvivors = []
     for elt_survivor1 in survivor1Badges:
+        set_badge_survivor1 = set(elt_survivor1[0])
         for elt_survivor2 in survivor2Badges:
+            set_badge_survivor2 = set(elt_survivor2[0])
             for elt_survivor3 in survivor3Badges:
-                set_badge_survivor1 = set(elt_survivor1[0])
-                set_badge_survivor2 = set(elt_survivor2[0])
                 set_badge_survivor3 = set(elt_survivor3[0])
-                intersect_survivors1and2 = set_badge_survivor1.intersection(set_badge_survivor2)
-                if len(intersect_survivors1and2) == 0: 
-                    intersect_survivors1and3 = set_badge_survivor1.intersection(set_badge_survivor3)
-                    if len(intersect_survivors1and3) == 0:
-                        intersect_survivors2and3 = set_badge_survivor2.intersection(set_badge_survivor3)
-                        if len(intersect_survivors2and3) == 0:
-                            priority_survivor1 = int(elt_survivor1[1])
-                            priority_survivor2 = int(elt_survivor2[1])
-                            priority_survivor3 = int(elt_survivor3[1])
-                            priority = priority_survivor1+priority_survivor2+priority_survivor3
-                            list_CombosSurvivors.append(priority, ((name_survivor1, elt_survivor1), (name_survivor2, elt_survivor2), (name_survivor3, elt_survivor3)))
+                liste_badges = elt_survivor1[0]+elt_survivor2[0]+elt_survivor3[0]
+                set_badges = set(liste_badges)
+                if len(liste_badges) == len(set_badges):
+                    priority_survivor1 = int(elt_survivor1[1])
+                    priority_survivor2 = int(elt_survivor2[1])
+                    priority_survivor3 = int(elt_survivor3[1])
+                    priority = priority_survivor1+priority_survivor2+priority_survivor3
+                    list_CombosSurvivors.append(priority, ((name_survivor1, elt_survivor1), (name_survivor2, elt_survivor2), (name_survivor3, elt_survivor3)))
+                else:
+                    list_wrongsets.append(liste_badges)
+                            
     list_CombosSurvivors = list_CombosSurvivors.sort(reverse = True)
     print  list_CombosSurvivors
                 
