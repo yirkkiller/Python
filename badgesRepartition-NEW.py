@@ -177,7 +177,7 @@ def getPossibleCombos(survivor, badges_survivor, dictBadges, dictSurvivor):
                 
     # Affect a priority to the badge based on the badge rarety (rarer = better)
     prioritySortedCombos = []
-    for elt in listCombinaisons_survivor:
+    for elt in newlist_combinations:
         rarety = []
         for idBadge in elt:
             rarety.append(dictBadges[idBadge]["Rarety"])
