@@ -3,6 +3,7 @@ from collections import Counter
 
 PATH = "D:\\Badges\\"
 
+# Priority of badge effects per class of survivor
 dictPriorities = {
         "Hunter" : {
                 "Critical Damage" : 2,
@@ -49,6 +50,7 @@ dictPriorities = {
         
     }
 
+# Read CSV class
 def readCSVFile(filename):
     csv_path = str(PATH)+str(filename)+'.csv'
     file_csv = open(csv_path,'r')
@@ -56,6 +58,7 @@ def readCSVFile(filename):
     file_csv.close()
     return result
 
+# Set the list of badges onto a dictionary
 def setOnDictBadges(mappingBadges, listOfBadges):
     dictBadges = {}
     for elt in listOfBadges:
@@ -74,6 +77,7 @@ def setOnDictBadges(mappingBadges, listOfBadges):
                 }
     return dictBadges
 
+# Set the list of survivors and their traits onto a dictionary
 def setOnDictSurvivors(survivor1, survivor2, survivor3):
     dictSurvivor = {}
     for survivor in [survivor1, survivor2, survivor3]:
@@ -89,6 +93,7 @@ def setOnDictSurvivors(survivor1, survivor2, survivor3):
         dictSurvivor[name_survivor].pop("Name")
     return dictSurvivor
 
+# Eliminate badges with priority = 0 (related to GLOBAL dictionary dictPriorities)
 def eliminateBadgesNotIntersting(dictSurvivor, dictBadges):
     listOfClasses = []
     for elt in dictSurvivor.keys():
@@ -109,6 +114,7 @@ def eliminateBadgesNotIntersting(dictSurvivor, dictBadges):
 
     return priorityByClass, listOfClasses
 
+# Affect a list of possible badges per survivor related to his class
 def createCombosPerSurvivor(priorityByClass, listOfClasses, dictBadges, dictSurvivor):
     badges_survivor1 = []
     badges_survivor2 = []
@@ -128,13 +134,15 @@ def createCombosPerSurvivor(priorityByClass, listOfClasses, dictBadges, dictSurv
 
 
 def getPossibleCombos(survivor, badges_survivor, dictBadges, dictSurvivor):
+    # In a 6 badges combination, each badge should have a unique orientation.
     liste_west = []
     liste_south_west = []
     liste_north_west = []
     liste_east = []
     liste_north_east = []
     liste_south_east = []
-
+    
+    # Set the badges into a list created by its orientation
     for elt in badges_survivor:
         if dictBadges[elt]["Orientation"] == "W":
             liste_west.append(elt)
@@ -148,30 +156,26 @@ def getPossibleCombos(survivor, badges_survivor, dictBadges, dictSurvivor):
             liste_north_east.append(elt)
         elif dictBadges[elt]["Orientation"] == "SE":
             liste_south_east.append(elt)
+    
+    # Get the list of all possible combinations with right orientation (one of each orientation)
     listCombinaisons_survivor = list(itertools.product(liste_west, liste_south_west, liste_north_west, liste_east, liste_north_east, liste_south_east))
     
-    for elt in listCombinaisons_survivor:
-        ### Test
-            
-        if '5' in elt:
-            if '11' in elt:
-                if '13' in elt:
-                    if '15' in elt:
-                        if '17' in elt:
-                            if '24' in elt:
-                                print elt
-        
-        ### End Test
-        
+    # Eliminate combinations of badges where more than 3 badges on 6 have the same effect
+    newlist_combinations = []
+    for elt in listCombinaisons_survivor:     
         effects = []
         for idBadge in elt:
             effects.append(dictBadges[idBadge]["Effect"])
         cpt = Counter(effects)
         for type_effect in cpt.keys():
-            sorted_test = sorted(elt)
-            if cpt[type_effect] > 3:
-                listCombinaisons_survivor.remove(elt)
+            cpt_effect = cpt[type_effect]
+            if cpt_effect > 3:
+                break
+        if not cpt_effect > 3:
+            newlist_combinations.append(elt)
+    
                 
+    # Affect a priority to the badge based on the badge rarety (rarer = better)
     prioritySortedCombos = []
     for elt in listCombinaisons_survivor:
         rarety = []
@@ -183,6 +187,7 @@ def getPossibleCombos(survivor, badges_survivor, dictBadges, dictSurvivor):
             priority += int(cpt[rarety])*int(rarety)
         prioritySortedCombos.append((elt,priority))
     
+    # Increase the badge priority related to the class of the survivor (related to the GLOBAL dictionary dictPriority)
     priorityCombosByClass = []   
     class_survivor = dictSurvivor[survivor]["Class"]
 
@@ -196,6 +201,7 @@ def getPossibleCombos(survivor, badges_survivor, dictBadges, dictSurvivor):
         priority = priority + badgeSetWithPriority[1]
         priorityCombosByClass.append((priority, badgeSet))
     
+    # Increase the badge set priority if at least 4 badges have the same letter (20% bonus) 
     priorityCombosPerBonus = []
     for badgeSet in priorityCombosByClass:
         letter = []
@@ -211,6 +217,7 @@ def getPossibleCombos(survivor, badges_survivor, dictBadges, dictSurvivor):
     
     return priorityCombosPerBonus
 
+# Eliminate sets of badge with a priority lower than the total average of all sets priority.
 def eliminateLowAverageSets(badgeSet, numberOfBadgesSets):
     newbadgeSet = badgeSet
     while len(newbadgeSet) > numberOfBadgesSets:
@@ -227,7 +234,8 @@ def eliminateLowAverageSets(badgeSet, numberOfBadgesSets):
             
     return newbadgeSet
     
-
+# Create the combination of 3 badges sets, one for each survivor
+# PRE-REQUISITE : One badge is unique and can only be used by only one survivor at the time
 def createSetsOfBadgesFor3Survivors(name_survivor1, name_survivor2, name_survivor3, listPossibleCombos_survivor1, listPossibleCombos_survivor2, listPossibleCombos_survivor3):
     list_CombosSurvivors = []
         
@@ -253,6 +261,7 @@ def createSetsOfBadgesFor3Survivors(name_survivor1, name_survivor2, name_survivo
                         break
     return  list_CombosSurvivors
 
+# Prepare string to write in the CSV
 def prepareCSV(listSetsOfBadges, dictBadges):
     setsOfBadges_survivor1 = listSetsOfBadges[0][1][0][1]
     setsOfBadges_survivor2 = listSetsOfBadges[0][1][1][1]
@@ -273,7 +282,7 @@ def prepareCSV(listSetsOfBadges, dictBadges):
          csvString += createLineBadge(badge, dictBadges, name_survivor3)
     
     return csvString
-    
+
 def createLineBadge(badge, dictBadges, nameSurvivor):
     letter = dictBadges[badge]["Letter"]
     rarety = dictBadges[badge]["Rarety"]
@@ -307,26 +316,37 @@ def createCSV(csv_string):
 
 
 if __name__ == "__main__":
+    # Read CSV Files : list of Badges, Traits of the 3 characters
     listOfBadges = readCSVFile("badges")
     survivor1 = readCSVFile("survivor1")
     survivor2 = readCSVFile("survivor2")
     survivor3 = readCSVFile("survivor3")
+    # Retrieve name of the fields from badges CSV-extracted list
     mappingBadges = listOfBadges[0].split(";")
     listOfBadges.remove(listOfBadges[0])
+    # Format the list of badges into dictionary
     dictBadges = setOnDictBadges(mappingBadges, listOfBadges)
+    # Format the survivors and their traits into a dictionary
     dictSurvivor = setOnDictSurvivors(survivor1, survivor2, survivor3)
+    # Eliminate the badges not interesting for the survivor, related to the GLOBAL dict dictPriorities 
     badgesPerClass, listOfClasses = eliminateBadgesNotIntersting(dictSurvivor, dictBadges)
+    # Affect the badges to a survivor
     badges_survivor1, badges_survivor2, badges_survivor3, survivor1, survivor2, survivor3 = createCombosPerSurvivor(badgesPerClass, listOfClasses, dictBadges, dictSurvivor)
+    # Process the list of badges to get the possible combinations of badges filtered by several criterias
     listPossibleCombos_survivor1 = getPossibleCombos(survivor1, badges_survivor1, dictBadges, dictSurvivor)
     listPossibleCombos_survivor2 = getPossibleCombos(survivor2, badges_survivor2, dictBadges, dictSurvivor)
     listPossibleCombos_survivor3 = getPossibleCombos(survivor3, badges_survivor3, dictBadges, dictSurvivor)
+    # Eliminate the not interesting combinations (priority lower than the average priority)
     numberOfBadgesSets = 560
     listSetsOfBadges = None
     while listSetsOfBadges == None:
         listCombos_survivor1 = eliminateLowAverageSets(listPossibleCombos_survivor1, numberOfBadgesSets)
         listCombos_survivor2 = eliminateLowAverageSets(listPossibleCombos_survivor2, numberOfBadgesSets)
         listCombos_survivor3 = eliminateLowAverageSets(listPossibleCombos_survivor3, numberOfBadgesSets)
+        # Get the better combination of badges for each of the 3 survivors
         listSetsOfBadges = createSetsOfBadgesFor3Survivors(survivor1, survivor2, survivor3, listCombos_survivor1, listCombos_survivor2, listCombos_survivor3)
         numberOfBadgesSets += 10
+    # Prepare the CSV
     csv_string = prepareCSV(listSetsOfBadges, dictBadges)
+    # Write the Output CSV
     createCSV(csv_string)
